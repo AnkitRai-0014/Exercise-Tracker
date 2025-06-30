@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Exercise Tracker</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f9f9f9;
+        padding: 20px;
+      }
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+      form {
+        background: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      input,
+      button {
+        display: block;
+        width: 100%;
+        margin-top: 10px;
+        padding: 10px;
+        font-size: 16px;
+      }
+      button {
+        background: #007bff;
+        border: none;
+        color: white;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Exercise Tracker</h1>
+
+    <form action="/api/users" method="post">
+      <h3>Create User</h3>
+      <input
+        type="text"
+        name="username"
+        placeholder="Enter username"
+        required
+      />
+      <button type="submit">Create User</button>
+    </form>
+
+    <form action="/api/users/:_id/exercises" method="post">
+      <h3>Add Exercise (Replace :_id)</h3>
+      <input
+        type="text"
+        name="description"
+        placeholder="Description"
+        required
+      />
+      <input
+        type="number"
+        name="duration"
+        placeholder="Duration (mins)"
+        required
+      />
+      <input type="date" name="date" />
+      <input
+        type="text"
+        placeholder="User ID (_id)"
+        oninput="this.form.action='/api/users/'+this.value+'/exercises'"
+        required
+      />
+      <button type="submit">Add Exercise</button>
+    </form>
+
+    <form action="/api/users/:_id/logs" method="get">
+      <h3>Get Logs (Replace :_id)</h3>
+      <input
+        type="text"
+        placeholder="User ID (_id)"
+        oninput="this.form.action='/api/users/'+this.value+'/logs'"
+        required
+      />
+      <input type="date" name="from" placeholder="From (yyyy-mm-dd)" />
+      <input type="date" name="to" placeholder="To (yyyy-mm-dd)" />
+      <input type="number" name="limit" placeholder="Limit" />
+      <button type="submit">Get Logs</button>
+    </form>
+  </body>
+</html>
