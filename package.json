@@ -18,8 +18,4 @@
     "mongoose": "^8.16.1"
   }
 }
-{
-  "description": "string",
-  "duration": 123,
-  "date": "Mon Jan 01 1990"
-}
+ 
