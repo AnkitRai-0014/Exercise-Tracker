@@ -22,10 +22,10 @@ const userSchema = new mongoose.Schema({
 });
 
 const exerciseSchema = new mongoose.Schema({
-  userId: { type: String, required: true },
-  description: { type: String, required: true },
-  duration: { type: Number, required: true },
-  date: { type: Date, required: true },
+  userId: String,
+  description: String,
+  duration: Number,
+  date: Date,
 });
 
 const User = mongoose.model("User", userSchema);
@@ -61,9 +61,9 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
 
   const exercise = new Exercise({
     userId: user._id,
-    description,
-    duration: parseInt(duration),
-    date: date ? new Date(date) : new Date(),
+    description: req.body.description,
+    duration: parseInt(req.body.duration),
+    date: req.body.date ? new Date(req.body.date) : new Date(),
   });
 
   const savedEx = await exercise.save();
@@ -80,6 +80,7 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
 // Get logs with from, to, limit
 app.get("/api/users/:_id/logs", async (req, res) => {
   const { from, to, limit } = req.query;
+
   const user = await User.findById(req.params._id);
   if (!user) return res.send("User not found");
 
@@ -91,26 +92,22 @@ app.get("/api/users/:_id/logs", async (req, res) => {
     if (to) filter.date.$lte = new Date(to);
   }
 
-  let query = Exercise.find(filter);
+  let query = Exercise.find(filter).select("description duration date");
 
-  // Apply limit
   if (limit) {
     query = query.limit(parseInt(limit));
   }
-
-  // Always sort by date ASC for predictable output (optional)
-  query = query.sort({ date: 1 });
 
   const exercises = await query.exec();
 
   res.json({
     _id: user._id,
     username: user.username,
-    count: await Exercise.countDocuments({ userId: user._id }), // total count!
+    count: await Exercise.countDocuments({ userId: user._id }),
     log: exercises.map((e) => ({
       description: e.description,
       duration: e.duration,
-      date: e.date.toDateString(),
+      date: e.date.toDateString(), // ✅ guaranteed: string, correct format
     })),
   });
 });
