@@ -93,16 +93,20 @@ app.get("/api/users/:_id/logs", async (req, res) => {
 
   let query = Exercise.find(filter);
 
+  // Apply limit
   if (limit) {
     query = query.limit(parseInt(limit));
   }
+
+  // Always sort by date ASC for predictable output (optional)
+  query = query.sort({ date: 1 });
 
   const exercises = await query.exec();
 
   res.json({
     _id: user._id,
     username: user.username,
-    count: exercises.length,
+    count: await Exercise.countDocuments({ userId: user._id }), // total count!
     log: exercises.map((e) => ({
       description: e.description,
       duration: e.duration,
